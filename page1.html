@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>the-f2e-week-7</title>
+  <!-- <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.0/normalize.css"> -->
+  <style>
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    canvas {
+      max-width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="mycanvas"></canvas>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.2/dat.gui.js"></script>
+<script>
+  // 環境變數
+  const updateFPS = 30;
+  const showMouse = true;
+  const bgColor = '#000';
+  let time = 0;
+  let ww;
+  let wh;
+
+  // 控制
+  const controls = {
+    value: 0,
+  };
+
+  const gui = new dat.GUI();
+  gui.add(controls, 'value', -2, 2).step(0.01).onChange();
+
+  // --------
+  // Vec2
+  class Vec2 {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+    }
+    set(x, y) {
+      this.x = x;
+      this.y = y;
+    }
+    move(x, y) {
+      this.x += x;
+      this.y += y;
+    }
+    add(v) {
+      return new Vec2(this.x + v.x, this.y + v.y);
+    }
+    sub(v) {
+      return new Vec2(this.x - v.x, this.y - v.y);
+    }
+    mul(s) {
+      return new Vec2(this.x * s, this.y * s);
+    }
+    set length(nv) {
+      let temp = this.unit.mul(nv);
+      this.set(temp.x, temp.y);
+    }
+    get length() {
+      return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+    clone() {
+      return new Vec2(this.x, this.y);
+    }
+    toString() {
+      return `(${this.x}, ${this.y})`;
+    }
+    equal(v) {
+      return this.x == v.x && this.y == v.y;
+    }
+    get angle() {
+      return Math.atan2(this.y, this.x);
+    }
+    get unit() {
+      return this.mul(1 / this.length);
+    }
+  }
+  // ----
+
+  const canvas = document.querySelector('#mycanvas');
+  const ctx = canvas.getContext('2d');
+
+  ctx.circle = function(v, r) {
+    this.arc(v.x, v.y, r, 0, Math.PI * 2);
+  };
+
+  ctx.line = function(v1, v2) {
+    this.moveTo(v1.x, v1.y);
+    this.lineTo(v2.x, v2.y);
+  };
+
+  // canvas 設定
+  const initCanvas = () => {
+    ww = canvas.width = window.innerWidth;
+    wh = canvas.height = window.innerHeight;
+  };
+
+  // 邏輯初始化
+  const init = () => {
+
+  };
+
+  // 畫面更新
+  const draw = () => {
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, ww, wh);
+
+    // --------
+    // 在這裡繪製
+
+    ctx.save();
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.arc(ww / 2, wh / 2, 250, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.arc(ww / 2, wh / 2, 350, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 電池 --------
+      ctx.beginPath(); // 最上面白色
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.moveTo(ww / 2 - 80, wh / 2 - 100);
+      ctx.lineTo(ww / 2 - 65, wh / 2 - 100);
+      ctx.lineTo(ww / 2 - 65, wh / 2 - 95);
+      ctx.lineTo(ww / 2 - 80, wh / 2 - 95);
+      ctx.fill();
+
+      ctx.beginPath(); // 中間大面積黃色
+      ctx.fillStyle = '#F5AF5F';
+      ctx.moveTo(ww / 2 - 95, wh / 2 - 95);
+      ctx.lineTo(ww / 2 - 50, wh / 2 - 95);
+      ctx.lineTo(ww / 2 - 50, wh / 2 - 15);
+      ctx.lineTo(ww / 2 - 95, wh / 2 - 15);
+      ctx.fill();
+
+      ctx.beginPath(); // 底下小面積黃色
+      ctx.fillStyle = '#F5AF5F';
+      ctx.moveTo(ww / 2 - 95, wh / 2 - 10);
+      ctx.lineTo(ww / 2 - 50, wh / 2 - 10);
+      ctx.lineTo(ww / 2 - 50, wh / 2 - 3);
+      ctx.lineTo(ww / 2 - 95, wh / 2 - 3);
+      ctx.fill();
+
+      ctx.beginPath(); // 閃電
+      ctx.fillStyle = '#fff';
+      ctx.moveTo(ww / 2 - 70, wh / 2 - 75);
+      ctx.lineTo(ww / 2 - 87, wh / 2 - 50);
+      ctx.lineTo(ww / 2 - 70, wh / 2 - 50);
+      ctx.lineTo(ww / 2 - 75, wh / 2 - 25);
+      ctx.lineTo(ww / 2 - 59, wh / 2 - 55);
+      ctx.lineTo(ww / 2 - 74, wh / 2 - 55);
+      ctx.fill();
+      // end 電池 --------
+
+      ctx.fillStyle = '#fff';
+      ctx.fillText('Radio Defense', ww / 2, wh / 2);
+      ctx.fillText('R', ww / 2, wh / 2 - 10);
+    ctx.restore();
+
+
+
+    // ----
+    
+    // 滑鼠
+    ctx.fillStyle = '#ff0000';
+    ctx.beginPath();
+    ctx.circle(mousePos, 3);
+    ctx.fill();
+
+    ctx.save();
+      ctx.beginPath();
+      ctx.translate(mousePos.x, mousePos.y);
+        ctx.strokeStyle = '#ff0000';
+        let len = 20;
+        ctx.line(new Vec2(-len, 0), new Vec2(len, 0));
+        ctx.fillText(mousePos, 10, -10);
+        ctx.rotate(Math.PI / 2);
+        ctx.line(new Vec2(-len, 0), new Vec2(len, 0));
+        ctx.stroke();
+    ctx.restore();
+
+
+    requestAnimationFrame(draw);
+  };
+
+  // 遊戲邏輯更新
+  const update = () => {
+    time += 1;
+  };
+
+  // 頁面載入
+  const loaded = () => {
+    initCanvas();
+    init();
+    requestAnimationFrame(draw);
+    setInterval(update, 1000 / updateFPS);
+  };
+
+  // 載入 縮放 事件
+  window.addEventListener('load', loaded);
+  window.addEventListener('resize', initCanvas);
+
+  // 滑鼠事件紀錄
+  const mousePos = new Vec2(0, 0);
+  let mousePosDown = new Vec2(0, 0);
+  let mousePosUp = new Vec2(0, 0);
+
+  const mousemove = (evt) => {
+    mousePos.set(evt.x, evt.y);
+    console.log(mousePos);
+  };
+  const mouseup = (evt) => {
+    mousePos.set(evt.x, evt.y);
+    mousePosUp = mousePos.clone();
+  };
+  const mousedown = (evt) => {
+    mousePos.set(evt.x, evt.y);
+    mousePosDown = mousePos.clone();
+  };
+
+  window.addEventListener('mousemove', mousemove);
+  window.addEventListener('mouseup', mouseup);
+  window.addEventListener('mousedown', mousedown);
+</script>
+
+</html>
