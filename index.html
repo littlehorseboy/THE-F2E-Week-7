@@ -37,10 +37,12 @@
   // 控制
   const controls = {
     value: 0,
+    degree: 0,
   };
 
   const gui = new dat.GUI();
-  gui.add(controls, 'value', -2, 2).step(0.01).onChange();
+  // gui.add(controls, 'value', -2, 2).step(0.01).onChange();
+  gui.add(controls, 'degree', 0, Math.PI * 2).step(0.01).onChange();
 
   // --------
   // Vec2
@@ -122,7 +124,13 @@
     // --------
     // 在這裡繪製
 
-
+    ctx.save();
+    ctx.translate(mousePos.x, mousePos.y);
+    // ctx.rotate(controls.degree);
+    ctx.rotate(time / 50);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, 100, 10);
+    ctx.restore();
 
     // ----
     
