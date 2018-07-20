@@ -145,12 +145,12 @@
       ctx.translate(ww / 2, wh / 2); // 以中心點開始畫
       ctx.beginPath();
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-      ctx.arc(0, 0, 250, 0, Math.PI * 2);
+      ctx.arc(0, 0, 220, 0, Math.PI * 2);
       ctx.stroke();
 
       ctx.beginPath();
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-      ctx.arc(0, 0, 350, 0, Math.PI * 2);
+      ctx.arc(0, 0, 320, 0, Math.PI * 2);
       ctx.stroke();
 
       // 電池 --------
@@ -234,10 +234,20 @@
       ctx.translate(ww, wh); // 以右上角開始畫
       ctx.beginPath(); // 三角形
       ctx.fillStyle = '#3676BB';
-      ctx.moveTo(-50, -50);
-      ctx.lineTo(-70, -75);
-      ctx.lineTo(-90, -90);
+      ctx.rotate(Math.PI * 0.1);
+      ctx.moveTo(-150, -150);
+      ctx.lineTo(-180, -195);
+      ctx.lineTo(-210, -150);
       ctx.fill();
+    ctx.restore();
+
+    ctx.save();
+      ctx.translate(0, wh); // 以左下角開始畫
+      ctx.fillStyle = '#fff';
+      ctx.font = '20px 微軟正黑體';
+      ctx.fillText('你身負著運送能量電池的任務', 20, -100);
+      ctx.fillText('卻遭到幾何星人的埋伏', 20, -70);
+      ctx.fillText('請協助從他們的手中奪回能量電池', 20, -40);
     ctx.restore();
     // ----
     
