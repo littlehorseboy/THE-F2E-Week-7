@@ -37,10 +37,12 @@
   // 控制
   const controls = {
     value: 0,
+    degree: 0,
   };
 
   const gui = new dat.GUI();
-  gui.add(controls, 'value', -2, 2).step(0.01).onChange();
+  // gui.add(controls, 'value', -2, 2).step(0.01).onChange();
+  gui.add(controls, 'degree', 0, Math.PI * 2).step(0.01).onChange();
 
   // --------
   // Vec2
@@ -123,58 +125,12 @@
     // 在這裡繪製
 
     ctx.save();
-      ctx.beginPath();
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-      ctx.arc(ww / 2, wh / 2, 250, 0, Math.PI * 2);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-      ctx.arc(ww / 2, wh / 2, 350, 0, Math.PI * 2);
-      ctx.stroke();
-
-      // 電池 --------
-      ctx.beginPath(); // 最上面白色
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-      ctx.moveTo(ww / 2 - 80, wh / 2 - 100);
-      ctx.lineTo(ww / 2 - 65, wh / 2 - 100);
-      ctx.lineTo(ww / 2 - 65, wh / 2 - 95);
-      ctx.lineTo(ww / 2 - 80, wh / 2 - 95);
-      ctx.fill();
-
-      ctx.beginPath(); // 中間大面積黃色
-      ctx.fillStyle = '#F5AF5F';
-      ctx.moveTo(ww / 2 - 95, wh / 2 - 95);
-      ctx.lineTo(ww / 2 - 50, wh / 2 - 95);
-      ctx.lineTo(ww / 2 - 50, wh / 2 - 15);
-      ctx.lineTo(ww / 2 - 95, wh / 2 - 15);
-      ctx.fill();
-
-      ctx.beginPath(); // 底下小面積黃色
-      ctx.fillStyle = '#F5AF5F';
-      ctx.moveTo(ww / 2 - 95, wh / 2 - 10);
-      ctx.lineTo(ww / 2 - 50, wh / 2 - 10);
-      ctx.lineTo(ww / 2 - 50, wh / 2 - 3);
-      ctx.lineTo(ww / 2 - 95, wh / 2 - 3);
-      ctx.fill();
-
-      ctx.beginPath(); // 閃電
-      ctx.fillStyle = '#fff';
-      ctx.moveTo(ww / 2 - 70, wh / 2 - 75);
-      ctx.lineTo(ww / 2 - 87, wh / 2 - 50);
-      ctx.lineTo(ww / 2 - 70, wh / 2 - 50);
-      ctx.lineTo(ww / 2 - 75, wh / 2 - 25);
-      ctx.lineTo(ww / 2 - 59, wh / 2 - 55);
-      ctx.lineTo(ww / 2 - 74, wh / 2 - 55);
-      ctx.fill();
-      // end 電池 --------
-
-      ctx.fillStyle = '#fff';
-      ctx.fillText('Radio Defense', ww / 2, wh / 2);
-      ctx.fillText('R', ww / 2, wh / 2 - 10);
+    ctx.translate(mousePos.x, mousePos.y);
+    // ctx.rotate(controls.degree);
+    ctx.rotate(time / 50);
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, 100, 10);
     ctx.restore();
-
-
 
     // ----
     
