@@ -12,13 +12,14 @@
       margin: 0 auto;
       height: 100%;
       overflow: hidden;
+      background-color: #001D2E;
     }
 
     canvas {
       max-width: 100%;
     }
 
-    body > button {
+    body>button {
       position: absolute;
       top: 55%;
       left: 50%;
@@ -28,10 +29,10 @@
       background-color: transparent;
       border: 1px solid #fff;
       border-radius: 25px;
-      padding: 0.5rem 1rem;
+      padding: 0.5rem 1.3rem;
     }
 
-    body > button:hover {
+    body>button:hover {
       color: #000;
       background-color: #fff;
     }
@@ -40,276 +41,13 @@
 
 <body>
   <canvas id="mycanvas"></canvas>
-  <button>Start Game</button>
+  <button id="startBtn">Start Game</button>
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.2/dat.gui.js"></script>
-<script>
-  // 環境變數
-  const updateFPS = 30;
-  const showMouse = true;
-  const bgColor = '#001D2E';
-  let time = 0;
-  let ww;
-  let wh;
-
-  // 控制
-  const controls = {
-    value: 0,
-  };
-
-  const gui = new dat.GUI();
-  gui.add(controls, 'value', -2, 2).step(0.01).onChange();
-
-  // --------
-  // Vec2
-  class Vec2 {
-    constructor(x, y) {
-      this.x = x;
-      this.y = y;
-    }
-    set(x, y) {
-      this.x = x;
-      this.y = y;
-    }
-    move(x, y) {
-      this.x += x;
-      this.y += y;
-    }
-    add(v) {
-      return new Vec2(this.x + v.x, this.y + v.y);
-    }
-    sub(v) {
-      return new Vec2(this.x - v.x, this.y - v.y);
-    }
-    mul(s) {
-      return new Vec2(this.x * s, this.y * s);
-    }
-    set length(nv) {
-      let temp = this.unit.mul(nv);
-      this.set(temp.x, temp.y);
-    }
-    get length() {
-      return Math.sqrt(this.x * this.x + this.y * this.y);
-    }
-    clone() {
-      return new Vec2(this.x, this.y);
-    }
-    toString() {
-      return `(${this.x}, ${this.y})`;
-    }
-    equal(v) {
-      return this.x == v.x && this.y == v.y;
-    }
-    get angle() {
-      return Math.atan2(this.y, this.x);
-    }
-    get unit() {
-      return this.mul(1 / this.length);
-    }
-  }
-  // ----
-
-  const canvas = document.querySelector('#mycanvas');
-  const ctx = canvas.getContext('2d');
-
-  ctx.circle = function(v, r) {
-    this.arc(v.x, v.y, r, 0, Math.PI * 2);
-  };
-
-  ctx.line = function(v1, v2) {
-    this.moveTo(v1.x, v1.y);
-    this.lineTo(v2.x, v2.y);
-  };
-
-  // canvas 設定
-  const initCanvas = () => {
-    ww = canvas.width = window.innerWidth;
-    wh = canvas.height = window.innerHeight;
-  };
-
-  // 邏輯初始化
-  const init = () => {
-
-  };
-
-  // 畫面更新
-  const draw = () => {
-    ctx.fillStyle = bgColor;
-    ctx.fillRect(0, 0, ww, wh);
-
-    // --------
-    // 在這裡繪製
-
-    ctx.save();
-      ctx.translate(ww / 2, wh / 2); // 以中心點開始畫
-      ctx.beginPath();
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-      ctx.arc(0, 0, 220, 0, Math.PI * 2);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-      ctx.arc(0, 0, 320, 0, Math.PI * 2);
-      ctx.stroke();
-
-      // 電池 --------
-      ctx.beginPath(); // 最上面白色
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-      ctx.moveTo(-62 + 9.5, -100);
-      ctx.lineTo(-27 - 9.5, -100);
-      ctx.lineTo(-27 - 9.5, -95);
-      ctx.lineTo(-62 + 9.5, -95);
-      ctx.fill();
-
-      ctx.beginPath(); // 中間大面積黃色
-      ctx.fillStyle = '#F5AF5F';
-      ctx.moveTo(-62, -95);
-      ctx.lineTo(-27, -95);
-      ctx.lineTo(-27, -44);
-      ctx.lineTo(-62, -44);
-      ctx.fill();
-
-      ctx.beginPath(); // 底下小面積黃色
-      ctx.fillStyle = '#F5AF5F';
-      ctx.moveTo(-62, -40);
-      ctx.lineTo(-27, -40);
-      ctx.lineTo(-27, -35);
-      ctx.lineTo(-62, -35);
-      ctx.fill();
-
-      ctx.beginPath(); // 閃電
-      ctx.fillStyle = '#fff';
-      ctx.moveTo(-43, -87);
-      ctx.lineTo(-55, -68);
-      ctx.lineTo(-43, -68);
-      ctx.lineTo(-45, -50);
-      ctx.lineTo(-34, -74);
-      ctx.lineTo(-46, -74);
-      ctx.fill();
-      
-      // end 電池 --------
-
-      // 按鈕
-      // ctx.save();
-      //   ctx.beginPath();
-      //   ctx.strokeStyle = '#fff';
-      //   ctx.moveTo(-40, 20);
-      //   ctx.lineTo(40, 20);
-      //   ctx.arc(40, 40, 20, Math.PI * 1.5, Math.PI * 2.5);
-      //   ctx.lineTo(-40, 60);
-      //   ctx.arc(-40, 40, 20, Math.PI * 0.5, Math.PI * 1.5);
-      //   ctx.stroke();
-      // ctx.restore();
-      
-      ctx.font = '25px Arial';
-      ctx.fillStyle = '#fff';
-      ctx.textAlign = 'center';
-      ctx.fillText('Radio Defense', 0, 0);
-      ctx.font = '110px Arial';
-      ctx.fillText('R', 20, -35);
-    ctx.restore();
-
-    ctx.save();
-      ctx.beginPath(); // 六邊形
-      ctx.fillStyle = '#E7465D';
-      ctx.moveTo(42, 95);
-      ctx.lineTo(70, 85);
-      ctx.lineTo(95, 93);
-      ctx.lineTo(98, 109);
-      ctx.lineTo(89, 130);
-      ctx.lineTo(60, 125);
-      ctx.fill();
-    ctx.restore();
-
-    ctx.save();
-      ctx.translate(ww, 0); // 以右上角開始畫
-      ctx.beginPath(); // 圓形
-      ctx.fillStyle = '#F5AF5F';
-      ctx.arc(-150, 80, 30, 0, Math.PI * 2);
-      ctx.fill();
-    ctx.restore();
-
-    ctx.save();
-      ctx.translate(ww, wh); // 以右上角開始畫
-      ctx.beginPath(); // 三角形
-      ctx.fillStyle = '#3676BB';
-      ctx.rotate(Math.PI * 0.1);
-      ctx.moveTo(-150, -150);
-      ctx.lineTo(-180, -195);
-      ctx.lineTo(-210, -150);
-      ctx.fill();
-    ctx.restore();
-
-    ctx.save();
-      ctx.translate(0, wh); // 以左下角開始畫
-      ctx.fillStyle = '#fff';
-      ctx.font = '20px 微軟正黑體';
-      ctx.fillText('你身負著運送能量電池的任務', 20, -100);
-      ctx.fillText('卻遭到幾何星人的埋伏', 20, -70);
-      ctx.fillText('請協助從他們的手中奪回能量電池', 20, -40);
-    ctx.restore();
-    // ----
-    
-    // 滑鼠
-    ctx.fillStyle = '#ff0000';
-    ctx.beginPath();
-    ctx.circle(mousePos, 3);
-    ctx.fill();
-
-    ctx.save();
-      ctx.translate(mousePos.x, mousePos.y);
-      ctx.beginPath();
-      ctx.strokeStyle = '#ff0000';
-      let len = 20;
-      ctx.line(new Vec2(-len, 0), new Vec2(len, 0));
-      ctx.fillText(mousePos, 10, -10);
-      ctx.rotate(Math.PI / 2);
-      ctx.line(new Vec2(-len, 0), new Vec2(len, 0));
-      ctx.stroke();
-    ctx.restore();
-
-    requestAnimationFrame(draw);
-  };
-
-  // 遊戲邏輯更新
-  const update = () => {
-    time += 1;
-  };
-
-  // 頁面載入
-  const loaded = () => {
-    initCanvas();
-    init();
-    requestAnimationFrame(draw);
-    setInterval(update, 1000 / updateFPS);
-  };
-
-  // 載入 縮放 事件
-  window.addEventListener('load', loaded);
-  window.addEventListener('resize', initCanvas);
-
-  // 滑鼠事件紀錄
-  const mousePos = new Vec2(0, 0);
-  let mousePosDown = new Vec2(0, 0);
-  let mousePosUp = new Vec2(0, 0);
-
-  const mousemove = (evt) => {
-    mousePos.set(evt.x, evt.y);
-    console.log(mousePos);
-  };
-  const mouseup = (evt) => {
-    mousePos.set(evt.x, evt.y);
-    mousePosUp = mousePos.clone();
-  };
-  const mousedown = (evt) => {
-    mousePos.set(evt.x, evt.y);
-    mousePosDown = mousePos.clone();
-  };
-
-  window.addEventListener('mousemove', mousemove);
-  window.addEventListener('mouseup', mouseup);
-  window.addEventListener('mousedown', mousedown);
-</script>
+<script src="class.js"></script>
+<script src="scenes.js"></script>
+<script src="game.start.js"></script>
+<script src="game.main.js"></script>
 
 </html>

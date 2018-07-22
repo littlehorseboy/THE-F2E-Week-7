@@ -135,13 +135,13 @@
     ctx.save();
       ctx.beginPath();
       ctx.translate(mousePos.x, mousePos.y);
-        ctx.strokeStyle = '#ff0000';
-        let len = 20;
-        ctx.line(new Vec2(-len, 0), new Vec2(len, 0));
-        ctx.fillText(mousePos, 10, -10);
-        ctx.rotate(Math.PI / 2);
-        ctx.line(new Vec2(-len, 0), new Vec2(len, 0));
-        ctx.stroke();
+      ctx.strokeStyle = '#ff0000';
+      let len = 20;
+      ctx.line(new Vec2(-len, 0), new Vec2(len, 0));
+      ctx.fillText(mousePos, 10, -10);
+      ctx.rotate(Math.PI / 2);
+      ctx.line(new Vec2(-len, 0), new Vec2(len, 0));
+      ctx.stroke();
     ctx.restore();
 
 
