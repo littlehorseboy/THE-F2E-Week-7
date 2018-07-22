@@ -1,3 +1,24 @@
+class Ball {
+  constructor() {
+    this.x = 100;
+    this.y = 100;
+    this.vx = 5;
+    this.vy = 5;
+    this.radius = 25;
+    this.color = '#fff';
+  }
+
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
+}
+
+const balls = [];
+
 class Main {
   constructor() {
     this.animationFrame = null;
@@ -82,6 +103,21 @@ class Main {
       ctx.fillRect(-25 / 2, this.ship.r + 20, 25, 25);
 
       ctx.stroke();
+
+      ctx.rotate(Math.PI * 2 / 4 * 1);
+
+      var ball = new Ball();
+      ball.draw();
+      
+      balls.push(ball);
+      balls.forEach((ball) => {
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+      });
+      // setInterval(() => {
+        
+      // }, 200);
+      
     ctx.restore();
     // ----
 
