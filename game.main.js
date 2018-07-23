@@ -1,9 +1,9 @@
 class Ball {
   constructor() {
-    this.x = 100;
+    this.x = 0;
     this.y = 100;
-    this.vx = 5;
-    this.vy = 5;
+    this.vx = 0;
+    this.vy = 35;
     this.radius = 25;
     this.color = '#fff';
   }
@@ -104,19 +104,15 @@ class Main {
 
       ctx.stroke();
 
-      ctx.rotate(Math.PI * 2 / 4 * 1);
 
-      var ball = new Ball();
-      ball.draw();
+      // ctx.rotate(Math.PI * 2 / 4 * 1);
+
       
-      balls.push(ball);
       balls.forEach((ball) => {
+        ball.draw();
         ball.x += ball.vx;
         ball.y += ball.vy;
       });
-      // setInterval(() => {
-        
-      // }, 200);
       
     ctx.restore();
     // ----
@@ -143,7 +139,13 @@ class Main {
   }
 
   update() {
-    // time += 1;
+    this.time += 1;
+
+    if (this.time % 15 === 0) {
+      var ball = new Ball();
+
+      balls.push(ball);
+    }
   }
 
   cancelAnimationFrame() {
@@ -152,7 +154,7 @@ class Main {
   }
 
   startInterval() {
-    this.interval = setInterval(this.update, 1000 / this.updateFPS);
+    this.interval = setInterval(this.update.bind(this), 1000 / this.updateFPS);
   }
 
   clearInterval() {
